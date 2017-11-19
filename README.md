@@ -28,7 +28,7 @@ A module(plugin) by our definition is a standalone node application that can be 
 
 2) a generated file by us if you want your output to not be merged in the result.sql file by any reason
 
-**To enable separate file generation, have your standalone node app console.log or process.stdout.write the text |~separate~| before any other text and text separation will be enabled for that module.**
+**To enable separate file generation, have your standalone node app console.log or process.stdout.write the text ```|~separate~|``` before any other text and text separation will be enabled for that module.**
 
 ### Preprocessors:
 

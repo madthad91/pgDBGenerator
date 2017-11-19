@@ -6,7 +6,6 @@
   "scripts": {
     "ts": "ts-node",
     "start": "ts-node index.ts",
-    "testDeleteMe": "ts-node -e 'console.log('Hello world!')'",
     "test": "jasmine-ts \"test/**/*.spec.ts\"",
     "jasmine": "jasmine-ts"
   },

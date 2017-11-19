@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { execute } from './Executor';
 
 //writing to file because each cluster instance would have its own cache
 //even if everything was static, each process would have it's own static cache
@@ -19,7 +20,7 @@ export class EndOfFileCache{
 
     static getCache(){
         const res = fs.readFileSync(`${__dirname}/endOfFileCache.txt`).toString();
-        fs.unlink(`${__dirname}/endOfFileCache.txt`, ()=> null);
+        execute(`rm ${__dirname}/endOfFileCache.txt`, ()=>null);
         return res;
     }
 }

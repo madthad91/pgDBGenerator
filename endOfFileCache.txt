@@ -1,2 +1,0 @@
-alter table s2.t2 ADD foreign key (d1) references s2.t2;
-alter table s1.t1 ADD foreign key (c1) references s2.t2;

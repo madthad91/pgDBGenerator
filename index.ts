@@ -14,16 +14,17 @@ if(cluster.isMaster){
         //preprocessors:
         fs.readdirSync(`${__dirname}/preprocessors`)
             .forEach((file, idx)=>{
-                if(file == ".DS_Store") return;
-                execute(`cd ${__dirname}/preprocessors/${file} && npm install > /dev/null && npm run --silent start`, (res:string)=>{
-                    if(res.startsWith('|~separate~|'))
-                    {
-                        fs.appendFileSync(`${__dirname}/preprocessor_${file}_${idx+1}`, res.split('|~separate~|')[1]);
-                    }
-                    else{
-                        fs.appendFileSync(`${__dirname}/result.sql`, res);
-                    }
-                })
+              if(file.toLowerCase().startsWith("readme")) return;
+              if(file == ".DS_Store") return;
+              execute(`cd ${__dirname}/preprocessors/${file} && npm install > /dev/null && npm run --silent start`, (res:string)=>{
+                  if(res.startsWith('|~separate~|'))
+                  {
+                      fs.appendFileSync(`${__dirname}/preprocessor_${file}_${idx+1}`, res.split('|~separate~|')[1]);
+                  }
+                  else{
+                      fs.appendFileSync(`${__dirname}/result.sql`, res);
+                  }
+              })
             });
         //end preprocessors:
 
@@ -50,6 +51,7 @@ if(cluster.isMaster){
             //postprocessors:
                 fs.readdirSync(`${__dirname}/postprocessors`)
                 .forEach((file, idx)=>{
+                    if(file.toLowerCase().startsWith("readme")) return;
                     if(file == ".DS_Store") return;
                     execute(`cd ${__dirname}/postprocessors/${file} && npm install > /dev/null && npm run --silent start`, (res:string)=>{
                         if(res)
