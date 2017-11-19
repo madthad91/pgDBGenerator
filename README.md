@@ -47,5 +47,5 @@ Purpose: To append postgres commands to the end of your result file, or run a mo
 2) put the whole program into the postprocessors folder
 
 ## Why a build stage is not supported
-
+ 
 Simply put, build is not a standard npm script command in npm. Although more popular npm frameworks use build(angular cli with ng build), every module that is developed can entail very unique functionality. For this reason, a build process cannot be assumed. If you want to added a build like step to your modules, let's say if you wanted to support a compiled language such as typescript, then add your build process to either postinstall or prestart. If these are unfamiliar, see documentation on [npm scripts](https://docs.npmjs.com/misc/scripts).
