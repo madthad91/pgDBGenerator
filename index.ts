@@ -39,10 +39,7 @@ if (cluster.isMaster) {
     }
     for (let i = 0; i < schemas.length; i++) {
       const schemaName = schemas[i];
-      fs.appendFileSync(
-        './result.sql',
-        `CREATE SCHEMA IF NOT EXISTS ${schemaName}\n\n`
-      );
+      fs.appendFileSync('./result.sql', `CREATE SCHEMA IF NOT EXISTS ${schemaName}\n\n`);
       let tableSet = doc['schema'][schemaName]; //the list of tables under a schema
 
       //no tables in schema warning
@@ -98,9 +95,7 @@ if (cluster.isMaster) {
 
   //no columns in table warning
   if (!data) {
-    console.log(
-      "No columns in this table, continuing though. Hope you know what you're doing!"
-    );
+    console.log("No columns in this table, continuing though. Hope you know what you're doing!");
     process.exit();
   }
 
@@ -131,6 +126,33 @@ if (cluster.isMaster) {
           tokenizedFKTo[1]
         );
       }
+
+      //processing for midprocessors
+      fs.readdirSync(`${__dirname}/midprocessors`).forEach((file, idx) => {
+        if (file.toLowerCase().startsWith('readme')) return;
+        if (file == '.DS_Store') return;
+        console.log(`schemaName=${hostSchemaName};tableName=${hostTableName};data=${process.env.tableData ||
+          ''};cd ${__dirname}/midprocessors/${
+          file
+        } && npm install > /dev/null && npm run --silent start`)
+        console.log(file);
+        execute(
+          `schemaName=${hostSchemaName};tableName=${hostTableName};data=${process.env.tableData ||
+            ''};cd ${__dirname}/midprocessors/${
+            file
+          } && npm install > /dev/null && npm run --silent start`,
+          (res: string) => {
+            // if (res.startsWith('|~separate~|')) {
+              fs.appendFile(
+                `${__dirname}/midprocessor_${file}_${idx + 1}`,
+                res, 'utf-8',()=>null);
+            // } else {
+            //   fs.appendFileSync(`${__dirname}/result.sql`, res);
+            // }
+          }
+        );
+      });
+      //end processing for midprocessors
     }
   });
   // process.kill(process.pid, 'SIGHUP');

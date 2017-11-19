@@ -8,7 +8,7 @@
     "start": "ts-node index.ts",
     "test": "jasmine-ts \"test/**/*.spec.ts\"",
     "jasmine": "jasmine-ts",
-    "pretty": "prettier --single-quote --trailing-comma es5 --write ./**.ts"
+    "pretty": "prettier --single-quote --print-width 100 --trailing-comma es5 --write ./**.ts"
   },
   "author": "",
   "license": "ISC",
