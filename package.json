@@ -1,0 +1,28 @@
+{
+  "name": "postgresdb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "ts": "ts-node",
+    "start": "ts-node index.ts",
+    "testDeleteMe": "ts-node -e 'console.log('Hello world!')'",
+    "test": "jasmine-ts \"test/**/*.spec.ts\"",
+    "jasmine": "jasmine-ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "js-yaml": "^3.10.0"
+  },
+  "devDependencies": {
+    "@types/jasmine": "^2.8.2",
+    "@types/js-yaml": "^3.10.0",
+    "@types/node": "^8.0.53",
+    "jasmine": "^2.8.0",
+    "jasmine-core": "^2.8.0",
+    "jasmine-ts": "^0.2.1",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.6.1"
+  }
+}

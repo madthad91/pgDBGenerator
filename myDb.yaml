@@ -1,0 +1,17 @@
+schema:
+  s1:
+    t1:
+      c1:
+        dataType: 'p'
+        description: 'some text'
+        foreignKeyTo: s2.t2.d1
+      c2:
+        dataType: p
+        description: 'some text'
+  s2:
+    t1:
+    t2:
+      d1:
+        dataType: p
+        description: 'some text'
+        foreignKeyTo: s2.t2.d1
