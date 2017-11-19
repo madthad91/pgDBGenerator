@@ -21,9 +21,9 @@ if (cluster.isMaster) {
         } && npm install > /dev/null && npm run --silent start`,
         (res: string) => {
           if (res.startsWith('|~separate~|')) {
-            fs.appendFileSync(
+            fs.appendFile(
               `${__dirname}/preprocessor_${file}_${idx + 1}`,
-              res.split('|~separate~|')[1]
+              res.split('|~separate~|')[1],'utf-8', ()=>null
             );
           } else {
             fs.appendFileSync(`${__dirname}/result.sql`, res);
@@ -72,9 +72,9 @@ if (cluster.isMaster) {
           (res: string) => {
             if (res)
               if (res.startsWith('|~separate~|')) {
-                fs.appendFileSync(
+                fs.appendFile(
                   `${__dirname}/postprocessor_${file}_${idx + 1}`,
-                  res.split('|~separate~|')[1]
+                  res.split('|~separate~|')[1],'utf-8', ()=>null
                 );
               } else {
                 fs.appendFileSync(`${__dirname}/result.sql`, res);
