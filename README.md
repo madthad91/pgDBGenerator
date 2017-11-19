@@ -30,6 +30,8 @@ A module(plugin) by our definition is a standalone node application that can be 
 
 **To enable separate file generation, have your standalone node app console.log or process.stdout.write the text ```|~separate~|``` before any other text and text separation will be enabled for that module.**
 
+**If your plugin is simply a program, not preferred to use the modules this way, but you can use the ```|~skip~|``` to skip any behavior post module execution. This acts as an optimization because the core program does not have to process the plugin's return data**
+
 ### Preprocessors:
 
 Purpose: To prepend postgres commands to your result file, or run a module before the core program.

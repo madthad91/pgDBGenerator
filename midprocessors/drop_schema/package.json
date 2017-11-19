@@ -1,0 +1,15 @@
+{
+  "name": "drop_schema",
+  "version": "1.0.0",
+  "description": "This is a program to make a sql file for dropping all generated tables",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "schemaName=there node index.js"
+  },
+  "keywords": [
+    "node"
+  ],
+  "author": "Thaddeus Madison Jr",
+  "license": "MIT"
+}

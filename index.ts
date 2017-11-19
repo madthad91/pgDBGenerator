@@ -25,6 +25,8 @@ if (cluster.isMaster) {
               `${__dirname}/preprocessor_${file}_${idx + 1}`,
               res.split('|~separate~|')[1],'utf-8', ()=>null
             );
+          } else if(res.startsWith('|~skip~|')) {
+
           } else {
             fs.appendFileSync(`${__dirname}/result.sql`, res);
           }
@@ -76,6 +78,8 @@ if (cluster.isMaster) {
                   `${__dirname}/postprocessor_${file}_${idx + 1}`,
                   res.split('|~separate~|')[1],'utf-8', ()=>null
                 );
+              } else if(res.startsWith('|~skip~|')) {
+                
               } else {
                 fs.appendFileSync(`${__dirname}/result.sql`, res);
               }
@@ -131,21 +135,22 @@ if (cluster.isMaster) {
       fs.readdirSync(`${__dirname}/midprocessors`).forEach((file, idx) => {
         if (file.toLowerCase().startsWith('readme')) return;
         if (file == '.DS_Store') return;
-        console.log(`schemaName=${hostSchemaName};tableName=${hostTableName};data=${process.env.tableData ||
-          ''};cd ${__dirname}/midprocessors/${
-          file
-        } && npm install > /dev/null && npm run --silent start`)
-        console.log(file);
+        // console.log(`schemaName=${hostSchemaName};tableName=${hostTableName};data=${process.env.tableData ||
+        //   ''};cd ${__dirname}/midprocessors/${
+        //   file
+        // } && npm install > /dev/null && npm run --silent start`)
+        // console.log(file);
         execute(
           `schemaName=${hostSchemaName};tableName=${hostTableName};data=${process.env.tableData ||
             ''};cd ${__dirname}/midprocessors/${
             file
           } && npm install > /dev/null && npm run --silent start`,
           (res: string) => {
+            console.log(res)
             // if (res.startsWith('|~separate~|')) {
-              fs.appendFile(
+              fs.appendFileSync(
                 `${__dirname}/midprocessor_${file}_${idx + 1}`,
-                res, 'utf-8',()=>null);
+                res);
             // } else {
             //   fs.appendFileSync(`${__dirname}/result.sql`, res);
             // }

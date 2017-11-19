@@ -14,4 +14,9 @@ postprocessors/**/*.*
 !midprocessors/*.md
 !postprocessors/*.md
 
+# officially supported modules
+!midprocessors/drop_schema/**
+!midprocessors/drop_table/**
+
+
 result.sql

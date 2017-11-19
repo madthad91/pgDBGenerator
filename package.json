@@ -11,7 +11,7 @@
     "pretty": "prettier --single-quote --print-width 100 --trailing-comma es5 --write ./**.ts"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "js-yaml": "^3.10.0"
   },

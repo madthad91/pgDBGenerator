@@ -1,0 +1,1 @@
+console.log(`DROP SCHEMA ${process.env.schemaName} CASCADE`);
