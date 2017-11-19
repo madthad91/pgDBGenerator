@@ -3,6 +3,4 @@ node_modules
 **/.DS_Store
 preprocessor_*
 postprocessor_*
-preprocessors/**/*.*
-postprocessors/**/*.*
 result.sql
