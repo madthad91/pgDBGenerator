@@ -4,14 +4,13 @@ schema:
       c1:
         dataType: 'p'
         description: 'some text'
-        foreignKeyTo: s2.t2.d1
       c2:
-        dataType: p
+        dataType: 'i'
         description: 'some text'
+        foreignKeyTo: s2.t2.d1
   s2:
     t1:
     t2:
       d1:
         dataType: p
         description: 'some text'
-        foreignKeyTo: s2.t2.d1
