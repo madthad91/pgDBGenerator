@@ -25,7 +25,7 @@ let primaryKeyValue = null;
 
 //finding primary key - important for update set in postprocessor
 Object.keys(tableData).find(column=>{
-  if(tableData[column]['dataType'] =='p' && tableData[column]['dataType'].toLowerCase().includes('primary')){
+  if(tableData[column]['dataType'] =='p' || tableData[column]['dataType'].toLowerCase().includes('primary')){
     primaryKeyKey = column;
     // primaryKeyValue = ;
     return true;
