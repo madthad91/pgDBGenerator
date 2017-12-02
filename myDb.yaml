@@ -1,16 +1,16 @@
 schema:
-  s1:
-    t1:
+  myapp_test:
+    users:
       c1:
         dataType: 'p'
         description: 'some text'
       c2:
         dataType: 'i'
         description: 'some text'
-        foreignKeyTo: s2.t2.d1
-  s2:
-    t1:
-    t2:
-      d1:
-        dataType: p
-        description: 'some text'
+        foreignKeyTo: messages.c3
+    messages:
+      c3: 
+        dataType: 'p'
+    tags:
+      c4:
+        dataType: 'p'

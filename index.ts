@@ -40,7 +40,7 @@ if (cluster.isMaster) {
     }
     for (let i = 0; i < schemas.length; i++) {
       const schemaName = schemas[i];
-      fs.appendFileSync('./result.sql', `CREATE SCHEMA IF NOT EXISTS ${schemaName}\n\n`);
+      fs.appendFileSync('./result.sql', `CREATE SCHEMA IF NOT EXISTS ${schemaName};\n\n`);
       let tableSet = doc['schema'][schemaName]; //the list of tables under a schema
 
       //no tables in schema warning
@@ -61,31 +61,33 @@ if (cluster.isMaster) {
       }
     }
     cluster.disconnect(() => {
-      fs.appendFileSync('./result.sql', EndOfFileCache.getCache());
-      //postprocessors:
-      fs.readdirSync(`${path.join(__dirname, 'postprocessors')}`).forEach((file, idx) => {
-        if (file.toLowerCase().startsWith('readme')) return;
-        if (file == '.DS_Store') return;
-        execute(
-          `cd ${path.join(__dirname, `postprocessors/${
-            file
-          }`)} && npm install > /dev/null && npm run --silent start`,
-          (res: string) => {
-            if (res)
-              if (res.startsWith('|~separate~|')) {
-                fs.appendFile(
-                  `${path.join(__dirname, `postprocessor_${file}_${idx + 1}`)}`,
-                  res.split('|~separate~|')[1],'utf-8', ()=>null
-                );
-              } else if(res.startsWith('|~skip~|')) {
-                
-              } else {
-                fs.appendFileSync(`${path.join(__dirname, 'result.sql')}`, res);
+      fs.appendFile('./result.sql', EndOfFileCache.getCache(),
+        ()=>{
+          //postprocessors:
+          fs.readdirSync(`${path.join(__dirname, 'postprocessors')}`).forEach((file, idx) => {
+            if (file.toLowerCase().startsWith('readme')) return;
+            if (file == '.DS_Store') return;
+            execute(
+              `cd ${path.join(__dirname, `postprocessors/${
+                file
+              }`)} && npm install > /dev/null && npm run --silent start`,
+              (res: string) => {
+                if (res)
+                  if (res.startsWith('|~separate~|')) {
+                    fs.appendFile(
+                      `${path.join(__dirname, `postprocessor_${file}_${idx + 1}`)}`,
+                      res.split('|~separate~|')[1],'utf-8', ()=>null
+                    );
+                  } else if(res.startsWith('|~skip~|')) {
+                    
+                  } else {
+                    fs.appendFileSync(`${path.join(__dirname, 'result.sql')}`, res);
+                  }
               }
-          }
-        );
-      });
-      //end postprocessors:
+            );
+          });
+          //end postprocessors:
+        });
     });
   } catch (e) {
     console.log(e);
@@ -111,16 +113,20 @@ if (cluster.isMaster) {
   // e.addSequence(hostSchemaName, hostTableName);
 
   let columnSet = Object.keys(data);
-  columnSet.forEach(cName => {
+  columnSet.forEach((cName, idx, arr) => {
     //validation token could be false, if the data type wasn't valid, or if true,
     //the validationToken will be the data type expressed as a string
     let validationToken = Validator.validateMyStuff(data[cName].dataType);
     if (validationToken) {
-      resString += `\t${cName} ${validationToken},\n`;
+      if(idx + 1 == arr.length)
+        resString += `\t${cName} ${validationToken}\n`;
+      else
+        resString += `\t${cName} ${validationToken},\n`;
 
       if (data[cName].hasOwnProperty('foreignKeyTo')) {
         // TODO: implement token checking for periods and exit gracefully on valiation
         let tokenizedFKTo = data[cName].foreignKeyTo.split('.');
+        console.log('the foreign key set is at ', tokenizedFKTo)
         EndOfFileCache.addFK(
           hostSchemaName,
           hostTableName,

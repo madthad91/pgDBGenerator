@@ -19,6 +19,7 @@ postprocessors/**/*.*
 !midprocessors/drop_schema/**
 !midprocessors/drop_table/**
 !midprocessors/faker_middie/**
+!midprocessors/create_default_db/**
 
 npm-debug*
 
