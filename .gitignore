@@ -1,6 +1,7 @@
-node_modules
+node_modules/
 .DS_Store
 **/.DS_Store
+midprocessors/**/node_modules
 
 preprocessor_*
 midprocessor_*
@@ -17,6 +18,9 @@ postprocessors/**/*.*
 # officially supported modules
 !midprocessors/drop_schema/**
 !midprocessors/drop_table/**
+!midprocessors/faker_middie/**
+!midprocessors/create_default_db/**
 
+npm-debug*
 
 result.sql

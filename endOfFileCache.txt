@@ -1,0 +1,1 @@
+alter table myapp_test.users ADD foreign key (c2) references messages.c3;
