@@ -1,1 +1,1 @@
-console.log(`DROP SCHEMA ${process.env.schemaName} CASCADE`);
+console.log(`DROP SCHEMA ${process.env.schemaName} CASCADE;`);

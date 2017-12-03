@@ -12,18 +12,18 @@ export class EndOfFileCache {
     fs.appendFileSync(`${path.join(__dirname, 'endOfFileCache.txt')}`, sample);
   }
 
-  static addFK(
-    hostSchema: string,
-    hostTable: string,
-    hostColName: string,
-    targetSchema: string,
-    targetTable: string
-  ) {
-    let sample = `alter table ${hostSchema}.${hostTable} ADD foreign key (${
-      hostColName
-    }) references ${targetSchema}.${targetTable};\n`;
-    fs.appendFileSync(`${path.join(__dirname, 'endOfFileCache.txt')}`, sample);
-  }
+  // static addFK(
+  //   hostSchema: string,
+  //   hostTable: string,
+  //   hostColName: string,
+  //   targetSchema: string,
+  //   targetTable: string
+  // ) {
+  //   let sample = `alter table ${hostSchema}.${hostTable} ADD foreign key (${
+  //     hostColName
+  //   }) references ${targetSchema}.${targetTable};\n`;
+  //   fs.appendFileSync(`${path.join(__dirname, 'endOfFileCache.txt')}`, sample);
+  // }
 
   static getCache() {
     const res = fs.readFileSync(`${path.join(__dirname, 'endOfFileCache.txt')}`).toString();

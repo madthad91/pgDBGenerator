@@ -11,7 +11,7 @@ import * as path from 'path';
 if (cluster.isMaster) {
   try {
     var doc = yaml.safeLoad(fs.readFileSync('./myDb.yaml', 'utf8'));
-    const schemas = Object.keys(doc['schema']);
+    
     //preprocessors:
     fs.readdirSync(`${path.join(__dirname, 'preprocessors')}`).forEach((file, idx) => {
       if (file.toLowerCase().startsWith('readme')) return;
@@ -33,31 +33,44 @@ if (cluster.isMaster) {
       );
     });
     //end preprocessors:
-
-    if (!schemas.length) {
-      console.log('No schemas in this definition. Add schemas and try again!');
+    const dbs = doc['dbs'];
+    let dbNames:any = [];
+    dbNames = dbNames.concat(Object.keys(dbs));
+    if (!dbNames.length) {
+      console.log('No databases in this definition. Add schemas and try again!');
       process.exit();
     }
-    for (let i = 0; i < schemas.length; i++) {
-      const schemaName = schemas[i];
-      fs.appendFileSync('./result.sql', `CREATE SCHEMA IF NOT EXISTS ${schemaName};\n\n`);
-      let tableSet = doc['schema'][schemaName]; //the list of tables under a schema
+    
+    for (let i = 0; i < dbNames.length; i++) {
+      fs.appendFileSync('./result.sql', `CREATE DATABASE ${dbNames[i]};\n\\connect ${dbNames[i]};\n\n`);
 
-      //no tables in schema warning
-      if (!tableSet) {
-        console.log(
-          "No tables in this schema, continuing though. Hope you know what you're doing!"
-        );
-      } else {
-        let tableNames = Object.keys(tableSet);
-        tableNames.forEach(tableName => {
-          EndOfFileCache.addSequence(schemaName, tableName);
-          let w: Worker = cluster.fork({
-            tableData: JSON.stringify(tableSet[tableName]),
-            tableName: tableName,
-            schemaName: schemaName,
+      const schemas = Object.keys(doc['dbs'][`${dbNames[i]}`]);
+      if (!schemas.length) {
+        console.log('No schemas in this definition. Add schemas and try again!');
+        process.exit();
+      }
+      
+      for (let j = 0; j < schemas.length; j++) {
+        const schemaName = schemas[j];
+        fs.appendFileSync('./result.sql', `CREATE SCHEMA IF NOT EXISTS ${schemaName};\n\n`);
+        let tableSet = doc['dbs'][`${dbNames[i]}`][schemaName]; //the list of tables under a schema
+
+        //no tables in schema warning
+        if (!tableSet) {
+          console.log(
+            "No tables in this schema, continuing though. Hope you know what you're doing!"
+          );
+        } else {
+          let tableNames = Object.keys(tableSet);
+          tableNames.forEach(tableName => {
+            EndOfFileCache.addSequence(schemaName, tableName);
+            let w: Worker = cluster.fork({
+              tableData: JSON.stringify(tableSet[tableName]),
+              tableName: tableName,
+              schemaName: schemaName,
+            });
           });
-        });
+        }
       }
     }
     cluster.disconnect(() => {
@@ -118,23 +131,28 @@ if (cluster.isMaster) {
     //the validationToken will be the data type expressed as a string
     let validationToken = Validator.validateMyStuff(data[cName].dataType);
     if (validationToken) {
-      if(idx + 1 == arr.length)
-        resString += `\t${cName} ${validationToken}\n`;
-      else
-        resString += `\t${cName} ${validationToken},\n`;
+
+      resString += `\t${cName} ${validationToken}`;
 
       if (data[cName].hasOwnProperty('foreignKeyTo')) {
         // TODO: implement token checking for periods and exit gracefully on valiation
         let tokenizedFKTo = data[cName].foreignKeyTo.split('.');
-        console.log('the foreign key set is at ', tokenizedFKTo)
-        EndOfFileCache.addFK(
-          hostSchemaName,
-          hostTableName,
-          cName,
-          tokenizedFKTo[0],
-          tokenizedFKTo[1]
-        );
+        resString += ` REFERENCES ${tokenizedFKTo[0]}.${tokenizedFKTo[1]}`;
+        // console.log('the foreign key set is at ', tokenizedFKTo)
+        // EndOfFileCache.addFK(
+        //   hostSchemaName,
+        //   hostTableName,
+        //   cName,
+        //   tokenizedFKTo[0],
+        //   tokenizedFKTo[1]
+        // );
       }
+
+      if(idx + 1 == arr.length)
+        resString += `\n`;
+      else
+        resString += `,\n`;
+
 
       //processing for midprocessors
       fs.readdirSync(`${path.join(__dirname, 'midprocessors')}`).forEach((file, idx) => {
