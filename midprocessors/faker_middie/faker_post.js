@@ -8,12 +8,13 @@ matches_array.forEach(val=>{
   val = val.replace('%>', '');
   let tempArr = val.split('~_~');
   //TODO: add srcSchema and targetSchema(if needed)
-  let srcTable = tempArr[0];
+  let srcSchemaAndTable = tempArr[0];
   let srcCol = tempArr[1];
   let targetPkVar = tempArr[2];
   let srcPkColName = tempArr[3];
   let srcPkColVar = tempArr[4];
-  console.log(srcTable, srcCol, targetPkVar, srcPkColName, srcPkColVar);
+  const resultText = `fs.appendFileSync(\`UPDATE ${srcSchemaAndTable} SET ${srcCol} = \${${targetPkVar}} WHERE ${srcPkColName} = \${${srcPkColVar}};\`);\n`;
+  fs.appendFileSync('index.js', resultText, {flag: 'a+'});
 
 })
-// console.log(matches_array);
+fs.appendFileSync('index.js', '}', {flag: 'a+'});
