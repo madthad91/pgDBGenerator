@@ -8,8 +8,8 @@ export class EndOfFileCache {
   constructor() {}
 
   static addSequence(schema: string, tableName: string) {
-    let sample = `create sequence ${schema}.${tableName}_ID_SEQ;\n`;
-    fs.appendFileSync(`${path.join(__dirname, 'endOfFileCache.txt')}`, sample);
+    let sequenceText = `create sequence ${schema}.${tableName}_ID_SEQ;\n`;
+    fs.appendFileSync(`${path.join(__dirname, 'endOfFileCache.txt')}`, sequenceText);
   }
 
   // static addFK(
@@ -26,8 +26,10 @@ export class EndOfFileCache {
   // }
 
   static getCache() {
-    const res = fs.readFileSync(`${path.join(__dirname, 'endOfFileCache.txt')}`).toString();
+    const sequenceText = fs.readFileSync(`${path.join(__dirname, 'endOfFileCache.txt')}`).toString();
+
+    //empty tmp file(cache)
     execute(`rm ${path.join(__dirname, 'endOfFileCache.txt')}`, () => null);
-    return res;
+    return sequenceText;
   }
 }

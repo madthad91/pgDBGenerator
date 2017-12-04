@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "ts": "ts-node",
-    "start": "ts-node index.ts",
+    "start": "ts-node src/index.ts",
     "test": "jasmine-ts \"test/**/*.spec.ts\"",
     "jasmine": "jasmine-ts",
     "pretty": "prettier --single-quote --print-width 100 --trailing-comma es5 --write ./**.ts"
