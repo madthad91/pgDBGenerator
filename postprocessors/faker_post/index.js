@@ -1,6 +1,7 @@
 const fs = require('fs');
 const child = require('child_process');
-
+console.log('|~separate~|');
+console.log('hai')
 var fileData = fs.readFileSync('../../midprocessors/faker_middie/index.js', {encoding: 'utf-8'}).toString();
 var regexp = /<%.*%>/g;
 var matches_array = fileData.match(regexp);

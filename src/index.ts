@@ -8,6 +8,7 @@ import { EndOfFileCache } from './EndOfFileCache';
 import { execute } from './Executor';
 import * as path from 'path';
 import PreprocessorRunner from './PreprocessorRunner';
+import PostprocessorRunner from './PostprocessorRunner';
 
 if (cluster.isMaster) {
   try {
@@ -58,28 +59,7 @@ if (cluster.isMaster) {
       fs.appendFile('./result.sql', EndOfFileCache.getCache(),
         ()=>{
           //postprocessors:
-          fs.readdirSync(`${path.join(__dirname, '..', 'postprocessors')}`).forEach((file, idx) => {
-            if (file.toLowerCase().startsWith('readme')) return;
-            if (file == '.DS_Store') return;
-            execute(
-              `cd ${path.join(__dirname, '..', `postprocessors/${
-                file
-              }`)} && npm install > /dev/null && npm run --silent start`,
-              (res: string) => {
-                if (res)
-                  if (res.startsWith('|~separate~|')) {
-                    fs.appendFile(
-                      `${path.join(__dirname, '..', `postprocessor_${file}_${idx + 1}`)}`,
-                      res.split('|~separate~|')[1],'utf-8', ()=>null
-                    );
-                  } else if(res.startsWith('|~skip~|')) {
-                    
-                  } else {
-                    fs.appendFileSync(`${path.join(__dirname, '..', 'result.sql')}`, res);
-                  }
-              }
-            );
-          });
+          new PostprocessorRunner();
           //end postprocessors:
         });
     });
@@ -110,7 +90,7 @@ if (cluster.isMaster) {
   columnSet.forEach((cName, idx, arr) => {
     //validation token could be false, if the data type wasn't valid, or if true,
     //the validationToken will be the data type expressed as a string
-    let validationToken = Validator.validateMyStuff(data[cName].dataType);
+    let validationToken = Validator.validateDatatype(data[cName].dataType);
     if (validationToken) {
 
       resString += `\t${cName} ${validationToken}`;
@@ -119,14 +99,6 @@ if (cluster.isMaster) {
         // TODO: implement token checking for periods and exit gracefully on valiation
         let tokenizedFKTo = data[cName].foreignKeyTo.split('.');
         resString += ` REFERENCES ${tokenizedFKTo[0]}.${tokenizedFKTo[1]}`;
-        // console.log('the foreign key set is at ', tokenizedFKTo)
-        // EndOfFileCache.addFK(
-        //   hostSchemaName,
-        //   hostTableName,
-        //   cName,
-        //   tokenizedFKTo[0],
-        //   tokenizedFKTo[1]
-        // );
       }
 
       if(idx + 1 == arr.length)
@@ -139,11 +111,7 @@ if (cluster.isMaster) {
       fs.readdirSync(`${path.join(__dirname, '..', 'midprocessors')}`).forEach((file, idx) => {
         if (file.toLowerCase().startsWith('readme')) return;
         if (file == '.DS_Store') return;
-        // console.log(`schemaName=${hostSchemaName};tableName=${hostTableName};data=${process.env.tableData ||
-        //   ''};cd ${__dirname}/midprocessors/${
-        //   file
-        // } && npm install > /dev/null && npm run --silent start`)
-        // console.log(file);
+
         execute(
           `schemaName=${hostSchemaName};tableName=${hostTableName};data=${process.env.tableData ||
             ''};cd ${path.join(__dirname, '..', 'midprocessors', file)} && npm install > /dev/null && npm run --silent start`,

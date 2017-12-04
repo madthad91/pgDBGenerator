@@ -1,6 +1,6 @@
 export class Validator {
-  static validateMyStuff(dataType: string) {
-    switch (dataType) {
+  static validateDatatype(datatype: string) {
+    switch (datatype) {
       case 'p':
         return 'int8 PRIMARY KEY';
       case 'i':

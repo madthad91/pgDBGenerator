@@ -41,9 +41,4 @@ export default class PreprocessorRunner implements IProcessRunner{
       fs.appendFileSync(`${path.join(__dirname, '..', 'result.sql')}`, res);
     }
   }
-
-
-      //preprocessors:
-      
-      //end preprocessors:
 }
